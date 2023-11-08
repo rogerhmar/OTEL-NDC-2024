@@ -1,0 +1,11 @@
+### Kotlin API is running
+GET http://localhost:5010/hello
+
+### Kotlin API saying hi to Dotnet API 
+GET http://localhost:5010/hi
+
+### Dotnet API is running 
+GET http://localhost:5000/hello
+
+### Dotnet API saying hi to Kotlin API 
+GET http://localhost:5000/hi

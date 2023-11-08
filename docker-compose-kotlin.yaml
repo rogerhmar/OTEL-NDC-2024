@@ -1,0 +1,13 @@
+# This will start the C# API and the infrastructure
+version: "3.9"
+include:
+  - docker-compose.yaml
+services:
+  dotnetapi:
+    build:
+      context: ./source/csharpExampleApi
+      dockerfile: Dockerfile
+    ports:
+      - "5099:80"
+    environment:
+      - collector=http://otel-collector:4317

@@ -1,0 +1,13 @@
+.vs
+obj
+bin
+.idea
+Folder.DotSettings.user
+test/summary.html
+node_modules
+tempo-data
+openapitools
+**/build
+**/build/src/main/gen
+.gradle
+source/kotlinExampleApi/src/main/gen/.openapi-generator/FILES
