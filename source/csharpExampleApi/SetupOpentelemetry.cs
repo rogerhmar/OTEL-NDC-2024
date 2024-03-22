@@ -1,5 +1,7 @@
 using System.Diagnostics;
 using System.Diagnostics.Metrics;
+using OpenTelemetry;
+using OpenTelemetry.Exporter;
 using OpenTelemetry.Logs;
 using OpenTelemetry.Metrics;
 using OpenTelemetry.Resources;
@@ -45,12 +47,9 @@ public static class SetupOpentelemetry
     private static void AddOpenTelemetryTracingAndMetrics(this IServiceCollection serviceCollection, string serviceName,
         Uri otelCollectorEndpoint)
     {
-        serviceCollection.AddOpenTelemetry()
-            .ConfigureResource(resourceBuilder => resourceBuilder.AddService(
-                    serviceName: serviceName,
-                    serviceVersion: "1.0.0"
-                )
-            )
+        IOpenTelemetryBuilder build = serviceCollection.AddOpenTelemetry();
+            
+            build.ConfigureResource(resourceBuilder => resourceBuilder.AddService(serviceName))
             .WithTracing(tracerProviderBuilder => tracerProviderBuilder
                 .AddSource(serviceName)
                 .AddHttpClientInstrumentation(options =>
@@ -59,6 +58,7 @@ public static class SetupOpentelemetry
                 })
                 .AddSqlClientInstrumentation(sqlClientInstrumentationOptions =>
                     sqlClientInstrumentationOptions.SetDbStatementForText = true)
+                
                 .AddAspNetCoreInstrumentation(o =>
                 {
                     o.RecordException = true;
@@ -68,6 +68,7 @@ public static class SetupOpentelemetry
                 {
                     options.Endpoint = otelCollectorEndpoint;
                     options.BatchExportProcessorOptions.ScheduledDelayMilliseconds = 5_000;
+                    options.Protocol = OtlpExportProtocol.Grpc;
                 })
 
             )
@@ -81,6 +82,7 @@ public static class SetupOpentelemetry
                     {
                         options.Endpoint = otelCollectorEndpoint;
                         options.BatchExportProcessorOptions.ScheduledDelayMilliseconds = 5_000;
+                        options.Protocol = OtlpExportProtocol.Grpc;
                     }
                 )
             );
