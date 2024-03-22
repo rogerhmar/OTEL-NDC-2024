@@ -57,7 +57,6 @@ public static class SetupOpentelemetry
                 {
                     options.RecordException = true;
                 })
-                .AddHttpClientInstrumentation()
                 .AddSqlClientInstrumentation(sqlClientInstrumentationOptions =>
                     sqlClientInstrumentationOptions.SetDbStatementForText = true)
                 .AddAspNetCoreInstrumentation(o =>

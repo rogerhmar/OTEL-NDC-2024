@@ -30,7 +30,7 @@ namespace exampleApi
         public async Task ThisNeedsToBeTraced()
         {
             using var _ =
-                Signals.MyActivitySource.CreateActivity($"{nameof(Dependency1)}-{nameof(ThisNeedsToBeTraced)}", ActivityKind.Internal);
+                Signals.MyActivitySource.StartActivity($"{nameof(Dependency1)}-{nameof(ThisNeedsToBeTraced)}", ActivityKind.Internal);
             await Task.Delay(500);
          }
     }

@@ -35,27 +35,11 @@ public static class MapRoutesExtensions
             return new Message($"Completed all dependencies in {timer.ElapsedMilliseconds} ms");
         }).WithName("parallel");
 
-        app.MapGet("/hi",
-            async (SuperService superService, IHttpClientFactory httpClientFactory, ILogger<SuperService> logger, CancellationToken cancellationToken) =>
-            {
-                var client = httpClientFactory.CreateClient();
-                logger.LogInformation("Starting parallel and hi to Java");
-                
-                var timer = Stopwatch.StartNew();
-
-                var timedCts = new CancellationTokenSource(TimeSpan.FromSeconds(2));
-                var cts = CancellationTokenSource.CreateLinkedTokenSource(timedCts.Token, cancellationToken);
-                
-                var fromJava = await client.GetStringAsync("http://localhost:5010/hello", cts.Token);
-                await superService.Dependency1("First");
-                await superService.Dependency2("Second");
-
-                return new Message($"Completed all dependencies in {timer.ElapsedMilliseconds} ms. Kotlin says: {fromJava}");
-            }).WithName("kotlin-dependency");
-
         app.MapGet("/error",
             (HttpResponse response) =>
             {
+                throw new Exception("Hei! Dette er en feil! Og den er veldig viktig! Forstått? Nei, har ikke tid til å forklare!");
+                
                 Activity.Current?.AddEvent(new ActivityEvent("This is an event added to the span"));
                 Activity.Current?.SetStatus(ActivityStatusCode.Error);
                 response.StatusCode = 400;
