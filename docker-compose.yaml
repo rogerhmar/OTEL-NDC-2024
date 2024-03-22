@@ -5,7 +5,7 @@ services:
     command: [ "-config.file=/etc/tempo.yaml" ]
     volumes:
       - ./config/tempo.yaml:/etc/tempo.yaml
-      - ./config/tempo-data:/tmp/tempo
+      - ./config/data/tempo:/tmp/tempo
     ports:
       - "3200:3200"   # tempo
       - "9095:9095" # tempo grp
@@ -42,7 +42,7 @@ services:
       ]
     volumes:
       - ./config/prometheus.yaml:/etc/prometheus/prometheus.yml
-      - ./config/data:/etc/prometheus
+      - ./config/data/prometheus:/etc/prometheus
     ports:
       - "9090:9090"
 
@@ -71,6 +71,6 @@ services:
   promtail:
     image: grafana/promtail:latest
     volumes:
-      - ./config/log:/var/log
+      - ./config/data/log:/var/log
       - ./config/promtail-config.yaml:/etc/promtail/config.yml
     command: -config.file=/etc/promtail/config.yml

@@ -12,3 +12,4 @@ openapitools
 .gradle
 source/kotlinExampleApi/src/main/gen/.openapi-generator/FILES
 .DS_Store
+config/data
