@@ -1,5 +1,5 @@
 receivers:
-  otlp:
+  otlp: # https://opentelemetry.io/docs/specs/otlp/
     protocols:
       grpc:
       http:
@@ -9,9 +9,9 @@ receivers:
             - "https://localhost*"
 exporters:
   prometheus:
-    endpoint: "otel-collector:8889"
+    endpoint: otel:8889
 
-  otlp:
+  otlp/traces:
     endpoint: tempo:4317
     tls:
       insecure: true
@@ -24,18 +24,16 @@ processors:
 
 extensions:
   health_check:
-  pprof:
-    endpoint: :1888
   zpages:
     endpoint: :55679
 
 service:
-  extensions: [pprof, zpages, health_check]
+  extensions: [health_check, zpages]
   pipelines:
     traces:
       receivers: [otlp]
       processors: [batch]
-      exporters: [otlp]
+      exporters: [otlp/traces]
     metrics:
       receivers: [otlp]
       processors: [batch]

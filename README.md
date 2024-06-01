@@ -1,12 +1,30 @@
 # OpenTelemetry Workshop
 This setup is based on: https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/examples/demo
 
+## Alternative setup
+If you want a simplified setup with a single container, you can use https://github.com/grafana/docker-otel-lgtm/. This is mained by Grafana.
+
 ## Prerequisites
-* Tool for building and running containers, e.g. Docker Desktop, Podman or Rancher Desktop.
-* If you are using podman, you need to set docker alias. On mac this will be `alias docker=podman`
+* Tool for building and running containers, e.g. Docker Desktop, Podman or Rancher Desktop - Including Compose.
+* Dotnet 8
 
 ## Architecture
-![Architecture](drawings/otel-arch.png)
+```mermaid
+flowchart LR
+    A["App1"] --> B("OpenTelemetry Collector \n :4317 (gRPC)")
+    C["App2"] --> B
+    B --> D("Loki \n :3100") --> G("Grafana")
+    B --> E("Tempo \n :3200") --> G
+    B --> F(Prometheus \n :9090)--> G
+
+    style A fill:red
+    style B fill:green
+    style C fill:blue
+    style D fill:yellow
+    style E fill:orange
+    style F fill:cyan
+    style G fill:purple
+```
 
 - Your application send data directly to the OTEl collector over gRPC
 - Prometheus scrapes data from the OTEL collector
@@ -15,37 +33,15 @@ This setup is based on: https://github.com/open-telemetry/opentelemetry-collecto
 
 ## Run Infrastructure
 
-This demo uses `docker compose`. To run:
-
-To develop on the C# app:
-```shell
-docker compose -f docker-compose-csharp.yaml up
-```
-
-To develop on the Kotlin app:
-```shell
-docker compose -f docker-compose-kotlin.yaml up
-```
-
-add `-d` to run detatched (just start it without displaying all logs)
-
-The demo exposes the following backends:
-
-- Tempo at http://localhost:3200 (no User interface)
-- Loki at http://localhost:3100 (no User interface)
-- Prometheus at http://localhost:9090 
-- Grafana at http://localhost:3000 (Sign in with admin/admin)
-
-Notes:
-- It may take some time for the application metrics to appear on the Prometheus
- dashboard;
-
+Start by running `docker compose up` add `-d` to run detatched (just start it without displaying all logs)
 To clean up any docker container run `docker-compose down` from this folder.
 
 ## Run the demo application - ExampleApi
 Run it with `dotnet run` or inside an IDE. This will give you more about URLs you can visit.
 
-# Workshop
+More background about setup in Dotnet is found here: https://opentelemetry.io/docs/languages/net/getting-started/#instrumentation
+
+# Doing Stuff
 ## Verify prerequisites
 * Docker is running? Run `docker ps`. You see `CONTAINER ID` and a lot of other stuff.
   * `error during connect` means Rancher Desktop/Podman Desktop/Docker Desktop has not been starterd

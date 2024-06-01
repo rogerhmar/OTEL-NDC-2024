@@ -1,18 +1,44 @@
 version: "3.9"
 services:
   tempo:
-    image: grafana/tempo:latest
+    image: grafana/tempo:2.5.0
     command: [ "-config.file=/etc/tempo.yaml" ]
     volumes:
       - ./config/tempo.yaml:/etc/tempo.yaml
-      - ./config/data/tempo:/tmp/tempo
+      - ./data/tempo:/tmp/tempo
+    stop_grace_period: 10s
     ports:
       - "3200:3200"   # tempo
       - "9095:9095" # tempo grp
 
-  # Collector
-  otel-collector:
-    image: otel/opentelemetry-collector-contrib:0.96.0
+  prom:
+    container_name: prometheus
+    image: prom/prometheus:v2.52.0
+    restart: always
+    user: root
+    command:
+      [
+        "--config.file=/etc/prometheus/prometheus.yml",
+        "--enable-feature=exemplar-storage",
+        "--web.enable-remote-write-receiver"
+      ]
+    volumes:
+      - ./config/prometheus.yaml:/etc/prometheus/prometheus.yml
+      - ./data/prometheus:/etc/prometheus
+    ports:
+      - "9090:9090"
+
+  loki:
+    image: grafana/loki:latest
+    volumes:
+      - ./config/loki-config.yaml:/etc/loki/local-config.yaml
+    ports:
+      - "3100:3100"
+    command: -config.file=/etc/loki/local-config.yaml
+
+# Collector https://opentelemetry.io/docs/collector/installation/
+  otel:
+    image: otel/opentelemetry-collector-contrib:0.101.0
     restart: always
     command:
       [
@@ -28,26 +54,14 @@ services:
       - "4317:4317" # OTLP gRPC receiver
       - "4318:4318" # OTLP HTTP receiver
       - "55679:55679" # zpages extension
-
-  prometheus:
-    container_name: prometheus
-    image: prom/prometheus:latest
-    restart: always
-    user: root
-    command:
-      [
-        "--config.file=/etc/prometheus/prometheus.yml",
-        "--enable-feature=exemplar-storage",
-        "--web.enable-remote-write-receiver"
-      ]
-    volumes:
-      - ./config/prometheus.yaml:/etc/prometheus/prometheus.yml
-      - ./config/data/prometheus:/etc/prometheus
-    ports:
-      - "9090:9090"
+    healthcheck:
+      test: ["CMD", "ls" ]
+      interval: 5s
+      retries: 5
+      timeout: 60s
 
   grafana:
-    image: grafana/grafana:latest
+    image: grafana/grafana:11.0.0
     ports:
       - '3000:3000'
     environment:
@@ -60,17 +74,11 @@ services:
       - ./config/grafana-dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yaml
       - ./config/grafana-datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml
 
-  loki:
-    image: grafana/loki:latest
-    volumes:
-      - ./config/loki-local-config.yaml:/etc/loki/local-config.yaml
-    ports:
-      - "3100:3100"
-    command: -config.file=/etc/loki/local-config.yaml
-
-  promtail:
-    image: grafana/promtail:latest
-    volumes:
-      - ./config/data/log:/var/log
-      - ./config/promtail-config.yaml:/etc/promtail/config.yml
-    command: -config.file=/etc/promtail/config.yml
+  test:
+    depends_on:
+      - "otel"
+      - "loki"
+      - "prom"
+      - "tempo"
+      - "grafana"
+    image: alpine/curl:8.7.1 # Consider adding healthchecks

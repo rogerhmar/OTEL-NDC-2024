@@ -17,7 +17,7 @@ public static class TelemetryConstants
 public static class Signals
 {
     public static readonly ActivitySource MyActivitySource = new(TelemetryConstants.ServiceName);
-    public static readonly Meter MyMeter = new Meter(TelemetryConstants.ServiceName);
+    public static readonly Meter MyMeter = new(TelemetryConstants.ServiceName);
 }
 
 public static class SetupOpentelemetry
@@ -52,18 +52,12 @@ public static class SetupOpentelemetry
             build.ConfigureResource(resourceBuilder => resourceBuilder.AddService(serviceName))
             .WithTracing(tracerProviderBuilder => tracerProviderBuilder
                 .AddSource(serviceName)
-                .AddHttpClientInstrumentation(options =>
-                {
-                    options.RecordException = true;
-                })
-                .AddSqlClientInstrumentation(sqlClientInstrumentationOptions =>
-                    sqlClientInstrumentationOptions.SetDbStatementForText = true)
-                
                 .AddAspNetCoreInstrumentation(o =>
                 {
                     o.RecordException = true;
                     o.Filter = ctx => !IsSwagger(ctx.Request); // TODO: Task 3
                 })
+                .AddHttpClientInstrumentation(o => o.RecordException = true)
                 .AddOtlpExporter(options =>
                 {
                     options.Endpoint = otelCollectorEndpoint;
@@ -74,10 +68,9 @@ public static class SetupOpentelemetry
             )
             .WithMetrics(meterProviderBuilder => meterProviderBuilder
                 .AddMeter(serviceName)
-                .AddHttpClientInstrumentation()
-                .AddProcessInstrumentation()
-                .AddRuntimeInstrumentation()
                 .AddAspNetCoreInstrumentation()
+                .AddHttpClientInstrumentation()
+                .AddRuntimeInstrumentation()
                 .AddOtlpExporter(options =>
                     {
                         options.Endpoint = otelCollectorEndpoint;

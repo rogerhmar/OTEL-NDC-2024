@@ -6,7 +6,7 @@ datasources:
     uid: prometheus
     access: proxy
     orgId: 1
-    url: http://prometheus:9090
+    url: http://prom:9090
     basicAuth: false
     isDefault: false
     version: 1
@@ -29,6 +29,7 @@ datasources:
       httpMethod: GET
       serviceMap:
         datasourceUid: prometheus
+
 
   - name: Loki
     type: loki

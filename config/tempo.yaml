@@ -1,5 +1,8 @@
 server:
   http_listen_port: 3200
+  log_level: info
+  grpc_server_max_recv_msg_size: 1.572864e+07
+  grpc_server_max_send_msg_size: 1.572864e+07
 
 distributor:
   receivers:                           # this configuration will listen on all ports and protocols that tempo is capable of.
@@ -30,6 +33,25 @@ metrics_generator:
           batch_send_deadline: 5s
           min_backoff: 1s
           max_backoff: 30s
+  processor:
+    # Span metrics create metrics based on span type, duration, name and service.
+    span_metrics:
+        # Configure extra dimensions to add as metric labels.
+        dimensions:
+          - http.method
+          - http.target
+          - http.status_code
+          - service.version
+    # Service graph metrics create node and edge metrics for determinng service interactions.
+    service_graphs:
+        # Configure extra dimensions to add as metric labels.
+        dimensions:
+          - http.method
+          - http.target
+          - http.status_code
+          - service.version
+  traces_storage:
+      path: /tmp/tempo/generator/traces
 
 storage:
   trace:
@@ -38,6 +60,7 @@ storage:
       path: /tmp/tempo/wal             # where to store the the wal locally
     local:
       path: /tmp/tempo/blocks
-
 overrides:
-  metrics_generator_processors: [service-graphs, span-metrics] # enables metrics generator
+  defaults:
+    metrics_generator:
+      processors: [service-graphs, span-metrics] # enables metrics generator  
