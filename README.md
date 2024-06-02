@@ -62,7 +62,7 @@ There are 2 options for setting up OpenTelemetry in .NET applications.
 The example app uses this setup. Refer to [SetupOpentelemetry](source/example/SetupOpentelemetry.cs) to see how this may be done. For more infomation and examples refer to
 * https://opentelemetry.io/docs/languages/net/
 
-### (fully) Automatic instrumentation
+### Automatic instrumentation
 This setup has include 3 containers (dependency1..3) with automatic instrumentation. The 2 main solutions for doing this is:
 * Download and run `otel-dotnet-auto-install.sh` or `OpenTelemetry.DotNet.Auto.psm1` or
 * Include Nuget `OpenTelemetry.AutoInstrumentation`
@@ -113,7 +113,7 @@ Read more about TraceQL here: https://grafana.com/docs/tempo/latest/traceql/
 
 Should look something like this:
 
-<img src="./images/Tempo.png" width="60%">
+<img src="./images/Tempo.png" width="80%">
 
 ### Prometheus - Statistics
 ```mermaid
@@ -131,7 +131,7 @@ You should be able to run `http_client_request_duration_seconds_count{}`. Send H
 
 Should look something like this:
 
-<img src="./images/Prometheus.png" width="60%">
+<img src="./images/Prometheus.png" width="80%">
 
 ### Loki - Telling the story
 ```mermaid
@@ -149,7 +149,7 @@ You can start by adding LogQL:  `{exporter="OTLP"}`. This will show all log reco
 
 Should look something like this:
 
-<img src="./images/Loki.png" width="60%">
+<img src="./images/Loki.png" width="75%">
 
 # Self-paced Tasks
 
@@ -160,7 +160,7 @@ Should look something like this:
 * Verify that everything in up and running with [http://localhost:5000/test](http://localhost:5000/test)
 * Open the webpage in [http://localhost:5000/](http://localhost:5000/)
 
-### Is the .NET app connected correctly
+### Is the .NET app connected correctly?
 * Understand the setup. Refer to [SetupOpentelemetry.cs](./source/example/SetupOpentelemetry.cs)
 * Verify that `ExampleApi` is sending Metrics, Traces and Logs to the OpenTelemetry, by checking the verious sources in Grafana. Refer to `section Grafana and some fundamentals for viewing data`
 
