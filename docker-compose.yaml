@@ -74,11 +74,53 @@ services:
       - ./config/grafana-dashboard.yml:/etc/grafana/provisioning/dashboards/dashboard.yaml
       - ./config/grafana-datasource.yml:/etc/grafana/provisioning/datasources/datasource.yaml
 
-  test:
-    depends_on:
-      - "otel"
-      - "loki"
-      - "prom"
-      - "tempo"
-      - "grafana"
-    image: alpine/curl:8.7.1 # Consider adding healthchecks
+  dependency1:
+    build:
+      context: ./source/dependency
+      dockerfile: Dockerfile
+    environment:
+      - "Logging__Console__LogLevel__Default=Information"
+      - "OTEL_DOTNET_AUTO_LOGS_INSTRUMENTATION_ENABLED=true" #Default: true
+      - "OTEL_DOTNET_AUTO_METRICS_INSTRUMENTATION_ENABLED=true" #Default: true
+      - "OTEL_DOTNET_AUTO_TRACES_INSTRUMENTATION_ENABLED=true" #Default: true
+      - "OTEL_TRACES_EXPORTER=otlp" #Default: otlp - OpenTelemetry Line Protocol
+      - "OTEL_METRICS_EXPORTER=otlp" #Default: otlp
+      - "OTEL_LOGS_EXPORTER=otlp" #Default: otlp
+      - "OTEL_EXPORTER_OTLP_ENDPOINT=http://otel:4318" #Default: http://localhost:4317 - PS did not work with :4317 (gRPC) so using :4318 (HTTP
+      - "OTEL_SERVICE_NAME=dependency1" 
+      - "OTEL_RESOURCE_ATTRIBUTES=service.version=1.0.0"
+      - "OTEL_DOTNET_AUTO_FAIL_FAST_ENABLED=true" #Default: fail fast for easier debugging
+      - "OTEL_DOTNET_AUTO_TRACES_CONSOLE_EXPORTER_ENABLED=false" #Default: false
+      - "OTEL_DOTNET_AUTO_METRICS_CONSOLE_EXPORTER_ENABLED=false" #Default: false
+      - "OTEL_DOTNET_AUTO_LOGS_CONSOLE_EXPORTER_ENABLED=false" #Default: false
+      - "OTEL_DOTNET_AUTO_LOGS_INCLUDE_FORMATTED_MESSAGE=true" #Default: false - PS: is convinient but has a performance impact 
+      - "OTEL_LOG_LEVEL=debug" #Default: Information
+    ports:
+      - "8080:8080"
+
+  dependency2:
+    build:
+      context: ./source/dependency
+      dockerfile: Dockerfile
+    environment:
+      - Logging__Console__LogLevel__Default=Information
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel:4318
+      - OTEL_SERVICE_NAME=dependency2
+      - OTEL_RESOURCE_ATTRIBUTES=service.version=5.3.1
+      - OTEL_DOTNET_AUTO_FAIL_FAST_ENABLED=true
+
+    ports:
+      - "8081:8080"
+
+  dependency3:
+    build:
+      context: ./source/dependency
+      dockerfile: Dockerfile
+    environment:
+      - Logging__Console__LogLevel__Default=Information
+      - OTEL_EXPORTER_OTLP_ENDPOINT=http://otel:4318
+      - OTEL_SERVICE_NAME=dependency3
+      - OTEL_RESOURCE_ATTRIBUTES=service.version=2.0.0
+      - OTEL_DOTNET_AUTO_FAIL_FAST_ENABLED=true
+    ports:
+      - "8082:8080"

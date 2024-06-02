@@ -8,18 +8,22 @@ If you want a simplified setup with a single container, you can use https://gith
 * Tool for building and running containers, e.g. Docker Desktop, Podman or Rancher Desktop - Including Compose.
 * Dotnet 8
 
-## Architecture
+## Overall Architecture
 ```mermaid
 flowchart LR
-    A["App1"] --> B("OpenTelemetry Collector \n :4317 (gRPC)")
-    C["App2"] --> B
+    A["App1(example)"] --> B("OpenTelemetry Collector \n :4317 (gRPC)")
+    H["dependency1"] --> B
+    I["dependency2"] --> B
+    J["dependency3"] --> B
     B --> D("Loki \n :3100") --> G("Grafana")
     B --> E("Tempo \n :3200") --> G
     B --> F(Prometheus \n :9090)--> G
 
     style A fill:red
     style B fill:green
-    style C fill:blue
+    style H fill:blue
+    style I fill:blue
+    style J fill:blue
     style D fill:yellow
     style E fill:orange
     style F fill:cyan
@@ -33,21 +37,52 @@ flowchart LR
 
 ## Run Infrastructure
 
-Start by running `docker compose up` add `-d` to run detatched (just start it without displaying all logs)
-To clean up any docker container run `docker-compose down` from this folder.
-
-## Run the demo application - ExampleApi
-Run it with `dotnet run` or inside an IDE. This will give you more about URLs you can visit.
-
-More background about setup in Dotnet is found here: https://opentelemetry.io/docs/languages/net/getting-started/#instrumentation
-
-# Doing Stuff
-## Verify prerequisites
+### Verify prerequisites
 * Docker is running? Run `docker ps`. You see `CONTAINER ID` and a lot of other stuff.
   * `error during connect` means Rancher Desktop/Podman Desktop/Docker Desktop has not been starterd
 * Docker-Compose is installed? Run `Docker-Compose -v`
 * Dotnet is installed? `dotnet --version`. This should display the version.
-  * If this fails, but you have `Visual Studio` installed, just run from inside `Visual Studio`. PS: `Visual Studio` is not the same as `Visual Studio Code`
+
+### Run the infrastructure
+Start by running `docker compose up` add `-d` to run detatched (just start it without displaying all logs)
+To clean up any docker container run `docker-compose down` from this folder.
+
+### Run the demo application - ExampleApi
+Run it with `dotnet run` or inside an IDE. This will give you more about URLs you can visit.
+
+## Instrumentation
+There are 2 options for setting up OpenTelemetry in .NET applications.
+* Setup with code (With the option of using both manual and automatic instrumentation)
+* No-code automatic setup of automatic instrumentation
+
+### Manual setup
+The example app uses this setup. Refer to [SetupOpentelemetry](source/example/SetupOpentelemetry.cs) to see how this may be done. For more infomation and examples refer to
+* https://opentelemetry.io/docs/languages/net/
+
+### (fully) Automatic instrumentation
+This setup has include 3 containers (dependency1..3) with automatic instrumentation. The 2 main solutions for doing this is:
+* Download and run `otel-dotnet-auto-install.sh` or `OpenTelemetry.DotNet.Auto.psm1` or
+* Include Nuget `OpenTelemetry.AutoInstrumentation`
+
+We have used the latter approch. Refer to dependency1 [docker-compose.yaml](./docker-compose.yaml) for an example. This example includes ENV variables for easier debugging.
+
+For more information refer to:
+* https://opentelemetry.io/docs/zero-code/net/
+
+
+## Example App
+```
+    .
+    ├── exampleAPI.http        <- To run HTTP command. An alternative to using Swagger
+    ├── MapRoutesExtensions.cs <- Sets up the routes
+    ├── SetupOpentelemetry.cs  <- All OpenTelemetry setup for Logging, Tracing and Metrics
+    └── Program.cs...          <- All the normal stuff
+```
+
+Startup app and go to `http://localhost:5000/`
+
+
+# Doing Stuff
 
 ## .NET - Tracing
 To look at the traces go to ´Grafana´ and open ´Explore´, and choose ´Tempo´ as data source. Make sure tab ´Search´ is chosen, and not ´TraceQL´

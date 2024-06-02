@@ -1,0 +1,22 @@
+@dependencyApi_HostAddress = http://localhost:8080
+
+GET {{dependencyApi_HostAddress}}/slow/
+Accept: application/json
+
+###
+POST {{dependencyApi_HostAddress}}/chain/
+Accept: application/json
+Content-Type: application/json
+
+[
+  "host.docker.internal:8082",
+  "host.docker.internal:8081",
+  "host.docker.internal:8082",
+  "host.docker.internal:8080",
+  "host.docker.internal:8081",
+  "host.docker.internal:8082",
+  "host.docker.internal:8082",
+  "host.docker.internal:8080",
+  "host.docker.internal:8082"
+]
+###

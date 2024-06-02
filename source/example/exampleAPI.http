@@ -1,0 +1,25 @@
+@dependencyApi_HostAddress = http://localhost:5000
+
+GET {{dependencyApi_HostAddress}}/serial/
+Accept: application/json
+
+###
+GET {{dependencyApi_HostAddress}}/parallel/
+Accept: application/json
+
+###
+GET {{dependencyApi_HostAddress}}/error/
+Accept: application/json
+
+###
+GET {{dependencyApi_HostAddress}}/throwEx/
+Accept: application/json
+
+###
+GET {{dependencyApi_HostAddress}}/remove/
+Accept: application/json
+
+###
+@increment = 10
+POST {{dependencyApi_HostAddress}}/metric/inc/{{increment}}
+Accept: application/json

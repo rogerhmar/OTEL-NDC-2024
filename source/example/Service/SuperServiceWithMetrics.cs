@@ -7,14 +7,14 @@ namespace exampleApi.Service
     {
         private readonly ILogger<SuperServiceWithMetrics> _logger;
 
-        public SuperServiceWithMetrics(ILogger<SuperServiceWithMetrics> logger)
+        public SuperServiceWithMetrics(ILogger<SuperServiceWithMetrics> logger, Meter meter)
         {
             _logger = logger;
+            _counter = meter.CreateCounter<long>("SuperServiceCounter", null, "This counts a lot");
         }
         
         // TODO: Task 22
-        private readonly Counter<long> _counter = 
-            Signals.MyMeter.CreateCounter<long>("SuperServiceCounter",null,"This counts a lot");
+        private readonly Counter<long> _counter;
 
         public void Increment(int inc = 1)
         {
