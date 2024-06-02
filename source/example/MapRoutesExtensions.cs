@@ -15,7 +15,17 @@ public static class MapRoutesExtensions
             await ctx.Response.SendFileAsync("wwwroot/index.html");
         }).WithName("index_html");
 
-        // TODO: Task 4
+        app.MapGet("/test", async (HttpResponse response, [FromServices] TestingService testingService) =>
+            {
+                var failingServices = await testingService.Test();
+                if (failingServices.Count > 0)
+                {
+                    response.StatusCode = 500;
+                }
+                return new { FailingServices = failingServices, OK = response.StatusCode == 200};
+            })
+            .WithName("test");
+        
         app.MapGet("/serial", async ([FromServices]SuperService superService) => await superService.InternalDependency1("AnotherMethod"))
             .WithName("serial");
 
@@ -43,20 +53,21 @@ public static class MapRoutesExtensions
             })
             .WithName("error");
 
+        // TODO: Task T3
         app.MapGet("/throwEx",
                 (HttpResponse _) => { throw new Exception("This is an exception thrown from the controller"); })
             .WithName("throwEx");
 
-        app.MapGet("/remove", () => { throw new Exception("This should not be found in Tempo!"); })
+        app.MapGet("/remove", () => new {message="This should not be found in Tempo!"})
             .WithName("remove");
-
-        app.MapPost("/metric/inc/{num}",
+        
+        // TODO Task M1
+        app.MapGet("/metric/inc/{num}",
             (HttpResponse response, [FromRoute(Name = "num")] int increment, [FromServices]SuperServiceWithMetrics superServiceWithMetrics) =>
             {
                 superServiceWithMetrics.Increment(increment);
                 response.StatusCode = 202;
-                return Results.Content("Incrementing counter by " + increment +
-                                       " Have a look in the Counter Dashboard! http://localhost:3000/dashboards");
+                return Results.Content($"Incrementing counter by {increment}. Have a look in the Counter Dashboard! http://localhost:3000/dashboards");
             }).WithName("metric-inc");
     }
 }

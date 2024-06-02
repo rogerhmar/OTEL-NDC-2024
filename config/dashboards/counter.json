@@ -107,7 +107,7 @@
               "uid": "prometheus"
             },
             "editorMode": "code",
-            "expr": "sum(increase(SuperServiceCounter_total[1m])) by (exported_job, exported_instance)",
+            "expr": "sum(increase(super_service_counter_total[1m])) by (exported_job, exported_instance)",
             "instant": false,
             "legendFormat": "{{exported_job}}-{{exported_instance}}",
             "range": true,

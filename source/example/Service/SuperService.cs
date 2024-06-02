@@ -2,11 +2,11 @@
 
 namespace exampleApi.Service
 {
-    public class SuperService(ILogger<SuperService> logger, ActivitySource activitySource)
+    public class SuperService(ActivitySource activitySource)
     {
         public async Task<Message> InternalDependency1(string nameOfMethod)
         {
-            logger.LogInformation("{name} is starting done", nameOfMethod);
+            // logger.LogInformation("{name} is starting done", nameOfMethod);
             using (activitySource.StartActivity($"{nameof(InternalDependency1)}-{nameOfMethod}")) // Start span
             {
                 await ThisNeedsToBeTraced();
@@ -16,7 +16,7 @@ namespace exampleApi.Service
 
         public async Task<Message> InternalDependency2(string nameOfMethod, string comment = "")
         {
-            logger.LogDebug("{name} is being done with comment '{comment}'", nameOfMethod, comment);
+            // logger.LogDebug("{name} is being done with comment '{comment}'", nameOfMethod, comment);
             using var activity = activitySource.StartActivity($"{nameof(InternalDependency2)}-{nameOfMethod}");
             var delay = new Random().Next(500);
             activity?.SetTag("delay", delay);
@@ -38,8 +38,8 @@ namespace exampleApi.Service
         /// <returns></returns>
         public async Task ThisNeedsToBeTraced()
         {
-            //using var _ = Signals.MyActivitySource.StartActivity($"{nameof(Dependency1)}-{nameof(ThisNeedsToBeTraced)}", ActivityKind.Internal);
-            await Task.Delay(500);
+            using var _ = activitySource.CreateActivity($"{nameof(InternalDependency1)}-{nameof(ThisNeedsToBeTraced)}", ActivityKind.Internal);
+            await Task.Delay(800);
          }
     }
 }

@@ -1,5 +1,9 @@
 @dependencyApi_HostAddress = http://localhost:5000
 
+###
+GET {{dependencyApi_HostAddress}}/test/
+Accept: application/json
+
 GET {{dependencyApi_HostAddress}}/serial/
 Accept: application/json
 
@@ -19,7 +23,7 @@ Accept: application/json
 GET {{dependencyApi_HostAddress}}/remove/
 Accept: application/json
 
-###
+### Prometheus Test - Increments the custom metric SuperServiceCounter_total by 10
 @increment = 10
-POST {{dependencyApi_HostAddress}}/metric/inc/{{increment}}
+GET {{dependencyApi_HostAddress}}/metric/inc/{{increment}}
 Accept: application/json

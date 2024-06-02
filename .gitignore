@@ -10,8 +10,7 @@ openapitools
 **/build
 **/build/src/main/gen
 .gradle
-source/kotlinExampleApi/src/main/gen/.openapi-generator/FILES
 .DS_Store
 config
 data
-~*.pptx
+~$observerbarhet.pptx

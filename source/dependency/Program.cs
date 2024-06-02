@@ -32,6 +32,10 @@ app.MapGet("/slow", async () =>
     .WithName("SlowRequest")
     .WithOpenApi();
 
+app.MapGet("/health", () => Task.FromResult(new { status = "OK" }))
+    .WithName("Health")
+    .WithOpenApi();
+
 app.MapPost("/chain", async ([FromBody]string[] hostWithPort, [FromServices] ILoggerFactory factory) =>
     {
         var logger = factory.CreateLogger("ChainRequest");

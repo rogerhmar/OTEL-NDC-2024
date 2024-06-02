@@ -45,7 +45,7 @@ public static class SetupOpentelemetry
                 .AddAspNetCoreInstrumentation(o =>
                 {
                     o.RecordException = true;
-                    o.Filter = ctx => !IsSwagger(ctx.Request); // TODO: Task 3
+                    o.Filter = ctx => !IsSwagger(ctx.Request); // TODO: Task T1
                 })
                 .AddHttpClientInstrumentation(o => o.RecordException = true)
                 .AddOtlpExporter(options =>
@@ -73,6 +73,7 @@ public static class SetupOpentelemetry
                 op.Endpoint = otelCollectorEndpoint;
                 op.BatchExportProcessorOptions.ScheduledDelayMilliseconds = batchDelay;
             });
+            options.IncludeFormattedMessage = true; // This is needed to include the formatted message in the log. E.g. Hosting environment: {EnvName} -> Hosting environment: Development
         }));
     }
 

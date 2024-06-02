@@ -12,6 +12,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSingleton<SuperService>();
 builder.Services.AddSingleton<SuperServiceWithMetrics>();
+builder.Services.AddSingleton<TestingService>();
 
 // The Standard .NET way - Use System.Diagnostics for traces 
 builder.Services.AddSingleton(new ActivitySource(TelemetryConstants.ServiceName)); // Dotnet 
