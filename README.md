@@ -51,7 +51,7 @@ To clean up any docker container run `docker-compose down` from this folder.
 Run it with `dotnet run` or inside an IDE. This will give you more about URLs you can visit.
 
 ### 4. Run a test to verify the setup
-Go to `localhost:5000/test`
+Go to [localhost:5000/test](http://localhost:5000/test)
 
 ## Instrumentation
 There are 2 options for setting up OpenTelemetry in .NET applications.
@@ -61,6 +61,8 @@ There are 2 options for setting up OpenTelemetry in .NET applications.
 ### Manual setup
 The example app uses this setup. Refer to [SetupOpentelemetry](source/example/SetupOpentelemetry.cs) to see how this may be done. For more infomation and examples refer to
 * https://opentelemetry.io/docs/languages/net/
+
+The self-paced tasks focus on the manual setup.
 
 ### Automatic instrumentation
 This setup has include 3 containers (dependency1..3) with automatic instrumentation. The 2 main solutions for doing this is:
@@ -99,7 +101,7 @@ Before looking at data, you need to populate some data. You can do that by runni
 
 Then open Grafana on `localhost:3000`
 
-### Tempo - Connecting components
+### Tempo - Tracing - Connecting components
 ```mermaid
 flowchart LR
     A["Grafana Home"] --> B("Explore") --> C("Select source 'Tempo' - Default data source is 'Loki'") --> D("Select 'Search' - Default is 'TraceQL'")
@@ -115,7 +117,7 @@ Should look something like this:
 
 <img src="./images/Tempo.png" width="80%">
 
-### Prometheus - Statistics
+### Prometheus - Metrics - Statistics
 ```mermaid
 flowchart LR
     A["Grafana Home"] --> B("Explore") --> C("Select source 'Prometheus' - Default data source is 'Loki'") --> D("Metrics browser'")
@@ -133,7 +135,7 @@ Should look something like this:
 
 <img src="./images/Prometheus.png" width="80%">
 
-### Loki - Telling the story
+### Loki - Logging - Telling the story
 ```mermaid
 flowchart LR
     A["Grafana Home"] --> B("Explore") --> C("Default data source is 'Loki'") --> D("Add a LogQL")
