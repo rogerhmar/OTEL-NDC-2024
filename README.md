@@ -190,7 +190,7 @@ Should look something like this:
 ### Task M1: Understanding the data flow
 * I have added a custom metric to `SuperServiceWithMetrics`
 * Use the endpoint [http://localhost:5000/metric/inc/10](http://localhost:5000/metric/inc/10) to increment the
-* Note that the counter `SuperServiceCounter` produces the metric `SuperServiceCounter_total`
+* Note that the counter `SuperServiceCounter` produces the metric `super_service_counter_total`
 * Verify that this is working
   * Find the metric in the output of the Open Telemetry Collector [http://localhost:8889/metrics](http://localhost:8889/metrics)
   * Find the metric in prometheus:  [http://localhost:9090/graph](http://localhost:9090/graph)
