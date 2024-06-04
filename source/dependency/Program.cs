@@ -4,6 +4,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Text;
 using System.Threading.Tasks;
+using dependencyApi;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -15,6 +16,7 @@ var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
+builder.Services.AddSingleton<TestingService>();
 
 var app = builder.Build();
 
@@ -71,6 +73,17 @@ app.MapPost("/chain", async ([FromBody]string[] hostWithPort, [FromServices] ILo
     })
     .WithName("ChainRequest")
     .WithOpenApi();
+
+app.MapGet("/test", async (HttpResponse response, [FromServices] TestingService testingService) =>
+    {
+        var failingServices = await testingService.Test();
+        if (failingServices.Count > 0)
+        {
+            response.StatusCode = 500;
+        }
+        return new { FailingServices = failingServices, OK = response.StatusCode == 200};
+    })
+    .WithName("test");
 
 app.Run();
 

@@ -1,6 +1,4 @@
-using System.Security.Cryptography;
-
-namespace exampleApi.Service;
+namespace dependencyApi;
 
 public class TestingService(ILogger<TestingService> logger)
 {
@@ -10,13 +8,11 @@ public class TestingService(ILogger<TestingService> logger)
         
         var endpoints = new Dictionary<string, string>
         {
-            ["grafana"] = "http://localhost:3000/metrics",
-            ["loki"] = "http://localhost:3100/metrics",
-            ["tempo"] = "http://localhost:3200/metrics",
-            ["prometheus"] = "http://localhost:9090/metrics",
-            ["dependency1"] = "http://localhost:8080/health",
-            ["dependency2"] = "http://localhost:8081/health",
-            ["dependency3"] = "http://localhost:8082/health",
+            ["grafana"] = "http://grafana:3000/metrics",
+            ["loki"] = "http://loki:3100/metrics",
+            ["tempo"] = "http://tempo:3200/metrics",
+            ["otel"] = "http://otel:8888/metrics",
+            ["prometheus"] = "http://prom:9090/metrics",
         };
 
         foreach (var (service, uri) in endpoints)

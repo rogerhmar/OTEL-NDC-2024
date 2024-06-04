@@ -14,17 +14,6 @@ public static class MapRoutesExtensions
                 new Microsoft.Extensions.Primitives.StringValues("text/html; charset=UTF-8");
             await ctx.Response.SendFileAsync("wwwroot/index.html");
         }).WithName("index_html");
-
-        app.MapGet("/test", async (HttpResponse response, [FromServices] TestingService testingService) =>
-            {
-                var failingServices = await testingService.Test();
-                if (failingServices.Count > 0)
-                {
-                    response.StatusCode = 500;
-                }
-                return new { FailingServices = failingServices, OK = response.StatusCode == 200};
-            })
-            .WithName("test");
         
         app.MapGet("/serial", async ([FromServices]SuperService superService) => await superService.InternalDependency1("AnotherMethod"))
             .WithName("serial");
