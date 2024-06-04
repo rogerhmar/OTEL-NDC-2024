@@ -5,11 +5,12 @@ bin
 Folder.DotSettings.user
 test/summary.html
 node_modules
-tempo-data
 openapitools
 **/build
 **/build/src/main/gen
 .gradle
 .DS_Store
-data
+
+data/*
+!data/tempo
 ~$observerbarhet.pptx
