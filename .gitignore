@@ -11,6 +11,5 @@ openapitools
 **/build/src/main/gen
 .gradle
 .DS_Store
-config
 data
 ~$observerbarhet.pptx
