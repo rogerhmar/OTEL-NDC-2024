@@ -11,6 +11,5 @@ openapitools
 .gradle
 .DS_Store
 
-data/**
 !data/tempo
 ~$observerbarhet.pptx
