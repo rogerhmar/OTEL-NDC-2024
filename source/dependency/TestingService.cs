@@ -21,16 +21,16 @@ public class TestingService(ILogger<TestingService> logger)
             {
                 var result = await new HttpClient().GetAsync(uri);
                 if (result.IsSuccessStatusCode)
-                    logger.LogInformation($"Service {service} is up and running");
+                    logger.LogInformation("Service {service} is up and running", service);
                 else
                 {
-                    logger.LogError($"Service {service} is down");
+                    logger.LogError("Service {service} is down", service);
                     failingTests.Add(service);
                 }
             }
             catch (Exception e)
             {
-                logger.LogError(e, $"Service {service} is down");
+                logger.LogError(e, "Service {service} is down", service);
                 failingTests.Add(service);
             }
         }

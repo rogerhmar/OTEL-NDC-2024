@@ -2,11 +2,13 @@
 
 namespace exampleApi.Service
 {
-    public class SuperService(ActivitySource activitySource)
+    public class SuperService(ActivitySource activitySource, ILogger<SuperService> logger)
     {
         public async Task<Message> InternalDependency1(string nameOfMethod)
         {
-            // logger.LogInformation("{name} is starting done", nameOfMethod);
+            // using var s1 = logger.BeginScope(new Dictionary<string, object> { {"nameOfThisMethod", nameof(InternalDependency1) } });
+
+            logger.LogInformation("{name} is starting", nameOfMethod);
             using (activitySource.StartActivity($"{nameof(InternalDependency1)}-{nameOfMethod}")) // Start span
             {
                 await ThisNeedsToBeTraced();

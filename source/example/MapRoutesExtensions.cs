@@ -20,7 +20,8 @@ public static class MapRoutesExtensions
 
         app.MapGet("/parallel", async ([FromServices]SuperService superService, [FromServices]ILoggerFactory factory) =>
         {
-            factory.CreateLogger("parallel").LogInformation("Starting parallel");
+            var logger = factory.CreateLogger("parallel");
+            logger.LogInformation("Starting parallel");
 
             var tasks = new[]
             {
@@ -31,6 +32,10 @@ public static class MapRoutesExtensions
             };
             var timer = Stopwatch.StartNew();
             await Task.WhenAll(tasks);
+            timer.Stop();
+            
+            logger.LogInformation("Parallel completed in {ElapsedMilliseconds} ms", timer.ElapsedMilliseconds);
+            
             return new Message($"Completed all dependencies in {timer.ElapsedMilliseconds} ms");
         }).WithName("parallel");
 
@@ -38,6 +43,7 @@ public static class MapRoutesExtensions
             {
                 Activity.Current?.AddEvent(new ActivityEvent("This is an event added to the span"));
                 Activity.Current?.SetStatus(ActivityStatusCode.Error);
+                // TODO: Add a tag, and find it in Tempo
                 response.StatusCode = 400;
             })
             .WithName("error");

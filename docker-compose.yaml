@@ -1,6 +1,6 @@
 services:
   tempo:
-    image: grafana/tempo:2.4.2
+    image: grafana/tempo:${TEMPO_VERSION}
     command: [ "-config.file=/etc/tempo.yaml" ]
     volumes:
       - ./config/tempo.yaml:/etc/tempo.yaml
@@ -12,7 +12,7 @@ services:
 
   prom:
     container_name: prometheus
-    image: prom/prometheus:v2.52.0
+    image: prom/prometheus:${PROMETHEUS_VERSION}
     restart: always
     user: root
     command:
@@ -37,7 +37,7 @@ services:
 
 # Collector https://opentelemetry.io/docs/collector/installation/
   otel:
-    image: otel/opentelemetry-collector-contrib:0.101.0
+    image: otel/opentelemetry-collector-contrib:${OTEL_VERSION}
     restart: always
     command:
       [
@@ -55,7 +55,7 @@ services:
       - "55679:55679" # zpages extension
 
   grafana:
-    image: grafana/grafana:11.0.0
+    image: grafana/grafana:${GRAFANA_VERSION}
     ports:
       - '3000:3000'
     environment:
