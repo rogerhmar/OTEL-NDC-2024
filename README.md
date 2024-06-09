@@ -28,13 +28,14 @@ Go to [localhost:5000/test](http://localhost:5000/test)
 ### Overall Architecture
 ```mermaid
 flowchart LR
-    A["App1(example)"] --> B("OpenTelemetry Collector \n :4317 (gRPC)")
+    A["Application(example)"] --> B("OpenTelemetry Collector \n :4317 (gRPC)")
     H["dependency1"] --> B
     I["dependency2"] --> B
     J["dependency3"] --> B
     B --> D("Loki \n :3100") --> G("Grafana")
     B --> E("Tempo \n :3200") --> G
     B --> F(Prometheus \n :9090)--> G
+    K(k6)-->|remote write|F
 
     style A fill:red
     style B fill:green
@@ -47,10 +48,12 @@ flowchart LR
     style G fill:purple
 ```
 
-- Your application send data directly to the OTEl collector over gRPC
+- Your application, called example, send data directly to the OTEl collector over gRPC
+- The "legacy" dependencies use autoinstrumentation and do the same
 - Prometheus scrapes data from the OTEL collector
 - Collector writes data to Loki and Tempo
 - Grafana uses the 3 sources to display data
+- k6 writes to prometheus using remote write
 
 ### Versions
 Versions are defined in [.env](./.env)
@@ -85,7 +88,7 @@ For more information refer to:
 ## Example App
 ```
     .
-    ├── exampleAPI.http        <- To run HTTP command. An alternative to using Swagger
+    ├── exampleAPI.http        <- To run HTTP command. An alternative to using Swagger or browser
     ├── MapRoutesExtensions.cs <- Sets up the routes
     ├── SetupOpentelemetry.cs  <- All OpenTelemetry setup for Logging, Tracing and Metrics
     └── Program.cs...          <- All the normal stuff
@@ -161,8 +164,13 @@ Should look something like this:
 <img src="./images/Loki.png" width="75%">
 
 ## Dashboards
-TODO
-
+* [ASP .NET OTEL Metrics](http://localhost:3000/d/ASP_NET_OTLP_COL_SHARED/asp-net-otel-metrics-from-otel-collector?orgId=1&var-job=exampleApiSetInEnv&var-instance=&var-http_client_peer_name=All&from=now-30m&to=now&refresh=1m)
+  * Ref: https://grafana.com/grafana/dashboards/19896-asp-net-otel-metrics-from-otel-collector/
+* [k6 Prometheus](http://localhost:3000/d/a3b2aaa8-bb66-4008-a1d8-16c49afedbf0/k6-prometheus-native-histograms?orgId=1)
+  * Ref: https://grafana.com/grafana/dashboards/18030-k6-prometheus-native-histograms/
+* [OpenTelemetry Collector](http://localhost:3000/d/BKf2sowmj/opentelemetry-collector?orgId=1&refresh=10s)
+  * Ref: https://grafana.com/grafana/dashboards/15983-opentelemetry-collector/
+* [Custom Counter](http://localhost:3000/d/c2b94126-3764-4cea-b30b-7207a0be87d9/counter-dashboard?orgId=1)
 
 # Self-paced Tasks
 
@@ -243,7 +251,7 @@ TODO
 * PS: LogQL `{exporter="OTLP"} | json | line_format "{{.body}}"` gives a clean prinout of log record body. Try this. Observe how the log records are flattended
 
 ### Task L2: Find Traces from log record
-* Send request to http://localhost:5000/parallel](http://localhost:5000/parallel)
+* Send request to [http://localhost:5000/parallel](http://localhost:5000/parallel)
 * Go to log lines created during this request processing, and find the trace ID
 * Go to the trace in Tempo.
 
@@ -266,14 +274,17 @@ TODO
 ### Task B1: Run k6 test and observe the system under load
 * Install k6. E.g. by running this https://dl.k6.io/msi/k6-latest-amd64.msi
 * Docs: https://k6.io/docs/
-* Run the test with `K6_PROMETHEUS_RW_SERVER_URL=http://localhost:9090/api/v1/write k6 run -o experimental-prometheus-rw test/script.js`
+* Run the test with `K6_PROMETHEUS_RW_SERVER_URL=http://localhost:9090/api/v1/write K6_PROMETHEUS_RW_TREND_AS_NATIVE_HISTOGRAM=true k6 run -o experimental-prometheus-rw test/script.js`
 * View the result in the dashboard called `k6 Prometheus`
 
 ### Task B2: Configure using Signal specific AddOtlpExpoerter methods
 * Update [SetupOpentelemetry.cs](./source/example/SetupOpentelemetry.cs) to use signal-specific (Logging, Trace, Metrics) setup of OTLP exporter.
 
 ### Task B3: Debugging
-
+* Add the debug exporter to the pipeline in the [OTEL collector config](./config/otel-collector-config.yaml)
+  * traces
+  * Logging
+  * traces
 
 ## Where can I go from here?
 You can e.g. 

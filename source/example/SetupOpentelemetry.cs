@@ -51,7 +51,9 @@ public static class SetupOpentelemetry
                 .AddMeter(TelemetryConstants.ServiceName) // Include this application as a meter
                 .AddAspNetCoreInstrumentation() // TODO: Task M2 - Look into this
                 .AddHttpClientInstrumentation()
-                .AddRuntimeInstrumentation());
+                .AddRuntimeInstrumentation()
+                .AddProcessInstrumentation()); // This is in beta - Need to create a complete dashboard - Ref https://grafana.com/grafana/dashboards/19896-asp-net-otel-metrics-from-otel-collector/
+            
                 //.AddOtlpExporter()); //  Signal-specific AddOtlpExporter methods and the cross-cutting UseOtlpExporter method being invoked on the same IServiceCollection is not supported.
  
         webApplicationBuilder.Services.AddLogging(loggingBuilder => loggingBuilder.AddOpenTelemetry(options =>

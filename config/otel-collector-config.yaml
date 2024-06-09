@@ -19,6 +19,11 @@ exporters:
   loki:
     endpoint: http://loki:3100/loki/api/v1/push
 
+  debug: # Add this to traces, metrics, and logs to see more detailed logs
+    verbosity: detailed
+    sampling_initial: 5
+    sampling_thereafter: 200
+
 processors:
   batch:
 
@@ -27,6 +32,7 @@ extensions:
   zpages:
     endpoint: :55679
 
+
 service:
   extensions: [health_check, zpages]
   pipelines:
@@ -34,14 +40,18 @@ service:
       receivers: [otlp]
       processors: [batch]
       exporters: [otlp/traces]
+      # exporters: [otlp/traces, debug] # Task B3: Add debug to see more detailed logs
     metrics:
       receivers: [otlp]
       processors: [batch]
       exporters: [prometheus]
+      # exporters: [prometheus, debug] # Task B3: Add debug to see more detailed logs
+
     logs:
       receivers: [otlp]
       processors: [batch]
       exporters: [loki]
+      # exporters: [loki, debug] # Task B3: Add debug to see more detailed logs
   telemetry:
     logs:
-      level: "debug"
+      level: "info"
