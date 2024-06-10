@@ -19,7 +19,7 @@ Run it with `dotnet run` or inside an IDE. This will give you more about URLs yo
 ### 4. Run a test to verify the setup
 Go to [localhost:5000/test](http://localhost:8080/test)
 
-## setup
+## Setup
 
 ### Prerequisites
 * Tool for building and running containers, e.g. Docker Desktop, Podman or Rancher Desktop - Including Compose.
