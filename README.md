@@ -1,5 +1,5 @@
 # OpenTelemetry Workshop
-This setup originally is based on: https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/examples/demo
+[OpenTelemetry Starter Pack NDC {Oslo} 2024](https://ndcoslo.com/agenda/opentelemetry-starter-pack-0ibp/03ljtvp5lbb)
 
 ## Run Infrastructure - Getting started
 
@@ -291,4 +291,8 @@ You can e.g.
 * Test with sampling https://github.com/open-telemetry/opentelemetry-collector-contrib/blob/main/processor/probabilisticsamplerprocessor/README.md
 * Check out frontend instrumentation using Faro https://github.com/grafana/faro-web-sdk
 * Replace the OTEL collector with Alloy https://grafana.com/docs/alloy/latest/
-* Check out the .NET Aspire dashboard. 
+* Check out the .NET Aspire dashboard.
+
+# Credit
+This setup originally is based on: https://github.com/open-telemetry/opentelemetry-collector-contrib/tree/main/examples/demo
+
