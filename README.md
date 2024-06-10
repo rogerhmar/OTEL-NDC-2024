@@ -17,7 +17,7 @@ This setup originally is based on: https://github.com/open-telemetry/opentelemet
 Run it with `dotnet run` or inside an IDE. This will give you more about URLs you can visit.
 
 ### 4. Run a test to verify the setup
-Go to [localhost:5000/test](http://localhost:5000/test)
+Go to [localhost:5000/test](http://localhost:8080/test)
 
 ## setup
 
