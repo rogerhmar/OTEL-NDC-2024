@@ -261,7 +261,7 @@ Should look something like this:
 * Advanced/optional:
   * Try to duplicate the scope call
   * Do you see the duplicated entry?
-  * What do you get if you mutate the value (and not the key) `logger.BeginScope`
+  * What do you get if you mutate the value (and not the key) `logger.BeginScope`?
   * Look at the log record in the custom processer in [SetupOpentelemetry.cs](./source/example/SetupOpentelemetry.cs)
   * And look in he OtlpLogRecordTransformer. Can you find the duplicated attribute key?
 
