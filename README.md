@@ -17,7 +17,7 @@ This setup originally is based on: https://github.com/open-telemetry/opentelemet
 Run it with `dotnet run` or inside an IDE. This will give you more about URLs you can visit.
 
 ### 4. Run a test to verify the setup
-Go to [localhost:5000/test](http://localhost:8080/test)
+Go to [localhost:8080/test](http://localhost:8080/test)
 
 ## Setup
 
@@ -178,7 +178,7 @@ Should look something like this:
 ### Has everything started?
 * Start the infrastructure as in this [section](#run-infrastructure)
 * Start the `ExampleApi`
-* Verify that everything in up and running with [http://localhost:5000/test](http://localhost:5000/test)
+* Verify that everything in up and running with [http://localhost:8080/test](http://localhost:8080/test)
 * Open the webpage in [http://localhost:5000/](http://localhost:5000/)
 
 ### Is the .NET app connected correctly?
