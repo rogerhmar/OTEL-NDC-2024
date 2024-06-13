@@ -194,14 +194,14 @@ Should look something like this:
 ### Task T1: Reducing noise
 * Locate the tracing RequestFilter in [SetupOpentelemetry.cs](./source/example/SetupOpentelemetry.cs)
 * Send request to the [http://localhost:5000/remove](http://localhost:5000/remove)
-* Update the request filter (input to AddElementsOpenTelemetry) to remove this endpoint
+* Update the request filter (input to SetupOpentelemetry) to remove this endpoint
 * Verify in Tempo that you succeeded.
 
 ### Task T2: Use the API and understand the delay in the execution
 * send requests to the APIs
   * [http://localhost:5000/parallel](http://localhost:5000/parallel)
   * [http://localhost:5000/serial](http://localhost:5000/serial)
-* It is easy understand what is causing the delay? Check if you understand it in [Tempo](http://localhost:3000/goto/2uq52zUSg?orgId=1)
+* It is easy understand what is causing the delay? Check if you understand it in `Tempo`
 * Find out why tracing is missing in `ThisNeedsToBeTraced`. Note that you need to start the activity, not only create it.
 
 ### Task T3: Use the API and get exceptions
@@ -209,7 +209,7 @@ Should look something like this:
   * [http://localhost:5000/throwEx](http://localhost:5000/throwEx)
   * [http://localhost:5000/error](http://localhost:5000/error)
 * Become familiar with the different ways of tracing errors. The mapping is done in [MapRoutesExtensions.cs](./source/example/MapRoutesExtensions.cs)
-* Look at the trace in [Tempo](http://localhost:3000/goto/2uq52zUSg?orgId=1)
+* Look at the trace in `Tempo`
 
 ## Metrics
 ### Task M1: Understanding the data flow
